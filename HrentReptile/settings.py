@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for scrapy02 project
+# Scrapy settings for HrentReptile project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,10 +9,10 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'scrapy02'
+BOT_NAME = 'HrentReptile'
 
-SPIDER_MODULES = ['scrapy02.spiders']
-NEWSPIDER_MODULE = 'scrapy02.spiders'
+SPIDER_MODULES = ['HrentReptile.spiders']
+NEWSPIDER_MODULE = 'HrentReptile.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -47,13 +47,13 @@ DOWNLOAD_DELAY = 20
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'scrapy02.middlewares.Scrapy02SpiderMiddleware': 543,
+#    'HrentReptile.middlewares.Scrapy02SpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'scrapy02.middlewares.Scrapy02DownloaderMiddleware': 543,
+#    'HrentReptile.middlewares.Scrapy02DownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -65,7 +65,7 @@ DOWNLOAD_DELAY = 20
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'scrapy02.pipelines.BaixingPipeline': 3000,
+   'HrentReptile.pipelines.BaixingPipeline': 3000,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from scrapy02.items import BaixingItem
+from HrentReptile.items import BaixingItem
 
 
 class BaixingSpider(scrapy.Spider):
