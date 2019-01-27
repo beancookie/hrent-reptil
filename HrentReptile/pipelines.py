@@ -14,7 +14,9 @@ class BaixingPipeline(object):
         self.collection = self.db.baixing
 
     def process_item(self, item, spider):
-        self.collection.insert_one(item)
+        is_update = (self.collection.find_one_and_replace({'_id': item['_id']}, item) != None)
+        if not is_update:
+            self.collection.insert_one(item)
         return item
 
     def close_spider(self, spider):
