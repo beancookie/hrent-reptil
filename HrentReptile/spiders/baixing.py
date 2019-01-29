@@ -38,6 +38,7 @@ class BaixingSpider(scrapy.Spider):
     def parse_detail(self, response):
         item = response.meta['data']
         item['_id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
+        item['url'] = response.url
         images = response.xpath('//div[@class="featured-height"]/div')
         item['image_urls'] = []
         for image in images:

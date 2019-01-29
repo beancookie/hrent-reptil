@@ -7,19 +7,18 @@
 import pymongo
 
 
-class BaixingPipeline(object):
+class MongoPipeline(object):
     def __init__(self):
         self.client = pymongo.MongoClient('mongodb://hrent:hrent@193.112.33.124/?authSource=hrent&authMechanism=SCRAM-SHA-256')
         self.db = self.client.hrent
-        self.collection = self.db.baixing
 
     def process_item(self, item, spider):
-        is_update = (self.collection.find_one_and_replace({'_id': item['_id']}, item) != None)
+        collection = self.db.get_collection(spider.name)
+        is_update = (collection.find_one_and_replace({'_id': item['_id']}, item) != None)
         if not is_update:
-            self.collection.insert_one(item)
+            collection.insert_one(item)
         return item
 
     def close_spider(self, spider):
-        self.collection.close()
         self.db.close()
         self.client.close()

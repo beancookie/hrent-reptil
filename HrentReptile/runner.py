@@ -1,3 +1,3 @@
 from scrapy import cmdline
 
-cmdline.execute("scrapy crawl baixing".split())
+cmdline.execute("scrapy crawl ziroom".split())

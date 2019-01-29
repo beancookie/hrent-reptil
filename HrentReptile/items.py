@@ -7,30 +7,53 @@
 
 import scrapy
 
-
-class BaixingItem(scrapy.Item):
+class BaseItem(scrapy.Item):
     _id = scrapy.Field()
     # 价格
     price = scrapy.Field()
     # 位置
     address = scrapy.Field()
-    # 更新时间
-    update_date = scrapy.Field()
     # 标题
     title = scrapy.Field()
-    # 图片
-    image_urls = scrapy.Field()
-    # 标签
-    tags = scrapy.Field()
     # 出租类型
     rent_type = scrapy.Field()
     # 户型
     house_type = scrapy.Field()
     # 面积
     area = scrapy.Field()
-    # 装修类型
-    decoration = scrapy.Field()
     # 朝向
     orientation = scrapy.Field()
     # 楼层
     floor = scrapy.Field()
+    # 标签
+    tags = scrapy.Field()
+    # 图片
+    image_urls = scrapy.Field()
+    # 房屋配置
+    deploy = scrapy.Field()
+    # url
+    url = scrapy.Field()
+
+class BaixingItem(BaseItem):
+    # 更新时间
+    update_date = scrapy.Field()
+    # 装修类型
+    decoration = scrapy.Field()
+
+
+class ZiroomItem(BaseItem):
+    # 交通
+    traffic = scrapy.Field()
+    # 室友
+    chums = scrapy.Field()
+    # 付款方式
+    payment = scrapy.Field()
+    # 推荐
+    recommend = scrapy.Field()
+    # 活动
+    activity = scrapy.Field()
+    # 空气检测
+    air_part = scrapy.Field()
+    # 视频
+    vr_video = scrapy.Field()
+
