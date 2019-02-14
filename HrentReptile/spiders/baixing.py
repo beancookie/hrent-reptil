@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import logging
 import re
 import hashlib
 from HrentReptile.items import BaixingItem
@@ -27,13 +28,12 @@ class BaixingSpider(scrapy.Spider):
             item['address'] = house.xpath('./div[@class="media-body"]/div[3]/text()').extract_first()
             item['update_date'] = house.xpath('./div[@class="media-body"]/div[3]/time/text()').extract_first()
             detail_page = house.xpath('./a[1]/@href').extract_first()
-            yield scrapy.Request(url=detail_page, callback=self.parse_detail, meta={'data': item})
+            yield response.follow(url=detail_page, callback=self.parse_detail, meta={'data': item})
 
         next_page = response.xpath('//ul[@class="list-pagination"]/li[not(@class="active")][last()]').extract_first()
 
-        if next_page:
-            next_page = response.urljoin(next_page)
-            yield scrapy.Request(next_page, callback=self.parse)
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse)
 
     def parse_detail(self, response):
         item = response.meta['data']

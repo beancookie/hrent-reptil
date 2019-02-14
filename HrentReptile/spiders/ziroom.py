@@ -14,12 +14,11 @@ class ZiroomSpider(scrapy.Spider):
         houses = response.xpath('//ul[@id="houseList"]/li')
         for house in houses:
             detail_page = house.xpath('./div[@class="priceDetail"]/p[@class="more"]/a/@href').extract_first()
-            yield scrapy.Request(url='http:' + detail_page, callback=self.parse_detail)
+            yield response.follow(url='http:' + detail_page, callback=self.parse_detail)
         next_page = response.xpath('//div[@id="page"]/a[@class="next"]/@href').extract_first()
 
-        if next_page:
-            next_page = response.urljoin(next_page)
-            yield scrapy.Request(next_page, callback=self.parse)
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse)
 
     def parse_detail(self, response):
         item = ZiroomItem()
@@ -60,7 +59,7 @@ class ZiroomSpider(scrapy.Spider):
         id = response.xpath('//input[@id="room_id"]/@value').extract_first()
         house_id = response.xpath('//input[@id="house_id"]/@value').extract_first()
         price_page = 'http://nj.ziroom.com/detail/info?id=%s&house_id=%s' % (id, house_id)
-        yield scrapy.Request(url=price_page,
+        yield response.follow(url=price_page,
                              method='OPTIONS',
                              callback=self.parse_price,
                              meta={'data': item, 'id': id, 'house_id': house_id})
@@ -79,7 +78,7 @@ class ZiroomSpider(scrapy.Spider):
         item['vr_video'] = price['vr_video']
 
         price_page = 'http://nj.ziroom.com/detail/config?house_id=%s&id=%s' % (house_id, id)
-        yield scrapy.Request(url=price_page,
+        yield response.follow(url=price_page,
                              method='OPTIONS',
                              callback=self.parse_deploy,
                              meta={'data': item})
