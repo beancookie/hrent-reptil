@@ -6,6 +6,8 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
+import random
 
 
 class HrentReptileSpiderMiddleware(object):
@@ -61,10 +63,15 @@ class HrentReptileDownloaderMiddleware(object):
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
 
+    def __init__(self, user_agent):
+        self.user_agent = user_agent
+
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
-        s = cls()
+        s = cls(
+            user_agent=crawler.settings.get('USER_AGENTS')
+        )
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
@@ -78,7 +85,9 @@ class HrentReptileDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        agent = random.choice(self.user_agent)
+        request.headers['User-Agent'] = agent
+        spider.logger.info("this is agent ip:%s" % agent)
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
