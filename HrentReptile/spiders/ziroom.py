@@ -3,6 +3,7 @@ import scrapy
 import re
 import hashlib
 from HrentReptile.items import ZiroomItem
+from HrentReptile.ocr import image_to_string
 
 
 class ZiroomSpider(scrapy.Spider):
@@ -64,14 +65,27 @@ class ZiroomSpider(scrapy.Spider):
                              callback=self.parse_price,
                              meta={'data': item, 'id': id, 'house_id': house_id})
 
+    def get_price_from_url(self, url, codes):
+        text = image_to_string(url)
+        price = []
+        for code in codes:
+            price.append(text[code])
+        return ''.join(price)
+
     def parse_price(self, response):
         item = response.meta['data']
         id = response.meta['id']
         house_id = response.meta['house_id']
         price = eval(response.text)['data']
-        item['price'] = price['price']
-        item['payment'] = price['payment']
-        item['recommend'] = price['recom']
+        item['price'] = self.get_price_from_url('http:' + price['price'][0], price['price'][2])
+        item['payment'] = []
+        for payment in price['payment']:
+            payment_dict = {
+                'period': payment['period'],
+                'price': self.get_price_from_url('http:' + payment['rent'][0], payment['rent'][2])
+            }
+            item['payment'].append(payment_dict)
+
         item['recommend'] = price['recom']
         item['activity'] = price['activity_list']
         item['air_part'] = price['air_part']
