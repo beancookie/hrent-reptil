@@ -150,9 +150,38 @@ class ElasticSearchPipeline(object):
 
 
 class MongoPipeline(object):
-    def __init__(self):
-        self.client = pymongo.MongoClient('mongodb://hrent:hrent@193.112.33.124/?authSource=hrent&authMechanism=SCRAM-SHA-256')
-        self.db = self.client.hrent
+    settings = None
+    client = None
+    db = None
+
+    @classmethod
+    def validate_settings(cls, settings):
+        def validate_setting(setting_key):
+            if settings[setting_key] is None:
+                raise InvalidSettingsException('%s is not defined in settings.py' % setting_key)
+
+        required_settings = {'MONGO_HOST'}
+
+        for required_setting in required_settings:
+            validate_setting(required_setting)
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        ext = cls()
+        ext.settings = crawler.settings
+        cls.validate_settings(ext.settings)
+        ext.client = cls.init_mongo_client(crawler.settings)
+        ext.db = ext.client.hrent
+        return ext
+
+    @classmethod
+    def init_mongo_client(cls, crawler_settings):
+        host = crawler_settings.get('MONGO_HOST')
+        auth_source = crawler_settings.get('MONGO_AUTH_SOURCE')
+        username = crawler_settings.get('MONGO_USERNAME')
+        password = crawler_settings.get('MONGO_PASSWORD')
+        client = pymongo.MongoClient('mongodb://%s:%s@%s/?authSource=%s&authMechanism=SCRAM-SHA-256' % (username, password, host, auth_source))
+        return client
 
     def process_item(self, item, spider):
         collection = self.db.get_collection(spider.name)

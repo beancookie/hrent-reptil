@@ -79,13 +79,18 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   # 'HrentReptile.pipelines.MongoPipeline': 3000,
+   'HrentReptile.pipelines.MongoPipeline': 2000,
    'HrentReptile.pipelines.ElasticSearchPipeline': 3000
 }
 ELASTICSEARCH_SERVERS = ['http://193.112.33.124:9200']
 ELASTICSEARCH_INDEX = 'hrent'
 ELASTICSEARCH_UNIQ_KEY = 'id'
 ELASTICSEARCH_BUFFER_LENGTH = 10
+
+MONGO_HOST = '127.0.0.1'
+MONGO_AUTH_SOURCE = 'hrent'
+MONGO_USERNAME = 'hrent'
+MONGO_PASSWORD = 'hrent'
 
 
 # Enable and configure the AutoThrottle extension (disabled by default)
