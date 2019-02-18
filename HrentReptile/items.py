@@ -8,15 +8,14 @@
 import scrapy
 
 class BaseItem(scrapy.Item):
-    _id = scrapy.Field()
+    id = scrapy.Field()
+    _type = scrapy.Field()
     # 价格
     price = scrapy.Field()
     # 位置
     address = scrapy.Field()
     # 标题
     title = scrapy.Field()
-    # 出租类型
-    rent_type = scrapy.Field()
     # 户型
     house_type = scrapy.Field()
     # 面积
@@ -35,6 +34,8 @@ class BaseItem(scrapy.Item):
     url = scrapy.Field()
 
 class BaixingItem(BaseItem):
+    # 出租类型
+    rent_type = scrapy.Field()
     # 更新时间
     update_date = scrapy.Field()
     # 装修类型

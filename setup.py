@@ -6,5 +6,5 @@ setup(
     name         = 'project',
     version      = '1.0',
     packages     = find_packages(),
-    entry_points = {'scrapy': ['settings = HrentReptile.settings']},
+    entry_points = {'scrapy': ['settings = HrentReptile.settings']}, install_requires=['elasticsearch', 'six']
 )

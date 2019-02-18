@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import re
 import hashlib
 from HrentReptile.items import ZiroomItem
 from HrentReptile.ocr import image_to_string
@@ -23,7 +22,7 @@ class ZiroomSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = ZiroomItem()
-        item['_id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
+        item['id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
         item['url'] = response.url
         right = response.xpath('//div[@class="room_detail_right"]')
         item['title'] = right.xpath('./div[@class="room_name"]/h2/text()').extract_first().strip()
@@ -86,7 +85,17 @@ class ZiroomSpider(scrapy.Spider):
             }
             item['payment'].append(payment_dict)
 
-        item['recommend'] = price['recom']
+        item['recommend'] = []
+        for recommend in price['recom']:
+            recommend_dict = {
+                'url': recommend['url'],
+                'photo': recommend['photo'],
+                'info': recommend['info'],
+                'price': self.get_price_from_url('http:' + recommend['price'][0], recommend['price'][2]),
+                'district': recommend['district'],
+            }
+            item['recommend'].append(recommend_dict)
+
         item['activity'] = price['activity_list']
         item['air_part'] = price['air_part']
         item['vr_video'] = price['vr_video']
