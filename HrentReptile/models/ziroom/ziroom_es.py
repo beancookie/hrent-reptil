@@ -34,7 +34,7 @@ class ZiroomDoc(Document):
     # url
     url = Text()
     # 交通
-    traffic = Text()
+    traffic = Text(multi=True)
     # 室友
     chums = Object(multi=True)
     # 付款方式
