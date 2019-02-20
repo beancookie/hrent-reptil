@@ -3,7 +3,7 @@ import scrapy
 import logging
 import re
 import hashlib
-from HrentReptile.items import BaixingItem
+from HrentReptile.models.baixing.baixing_item import BaixingItem
 
 
 class BaixingSpider(scrapy.Spider):

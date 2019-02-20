@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import hashlib
-from HrentReptile.items import ZiroomItem
-from HrentReptile.ocr import image_to_string
+import re
+from HrentReptile.models.ziroom.ziroom_item import ZiroomItem
+from HrentReptile.utils.map_util import geocode
+from HrentReptile.utils.ocr_util import image_to_string
+from HrentReptile.utils.str_util import get_float, get_int
 
 
 class ZiroomSpider(scrapy.Spider):
@@ -24,13 +27,19 @@ class ZiroomSpider(scrapy.Spider):
         item = ZiroomItem()
         item['id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
         item['url'] = response.url
+        item['city'] = response.xpath('//span[@id="curCityName"]/text()').extract_first()
         right = response.xpath('//div[@class="room_detail_right"]')
         item['title'] = right.xpath('./div[@class="room_name"]/h2/text()').extract_first().strip()
+        item['address'] = re.split('\\d+', item['title'])[0]
+        item['location'] = geocode(item['city'], item['address'])
         details = right.xpath('./ul[@class="detail_room"]/li')
-        item['area'] = details[0].xpath('./text()').extract_first().split()[1]
+        item['area'] = get_float(details[0].xpath('./text()').extract_first().split()[1])
         item['orientation'] = details[1].xpath('./text()').extract_first().split()[1]
         item['house_type'] = details[2].xpath('./text()').extract_first().split()[1]
-        item['floor'] = details[3].xpath('./text()').extract_first().split()[1]
+        floor = details[3].xpath('./text()').extract_first().split()[1]
+        item['floor'] = get_int(floor.split('/')[0])
+        top_floor = floor.split('/')[1]
+        item['top_floor'] = get_int(top_floor[0:len(top_floor) - 1])
         traffic = details[4].xpath('string(.)').extract_first().split()
         item['traffic'] = traffic[1:len(traffic)]
         item['tags'] = response.xpath('//p[@class="room_tags clearfix"]/span').xpath('string(.)').extract()
@@ -63,8 +72,9 @@ class ZiroomSpider(scrapy.Spider):
                              method='OPTIONS',
                              callback=self.parse_price,
                              meta={'data': item, 'id': id, 'house_id': house_id})
-
-    def get_price_from_url(self, url, codes):
+        
+    @staticmethod
+    def get_price_from_image(url, codes):
         text = image_to_string(url)
         price = []
         for code in codes:
@@ -76,14 +86,15 @@ class ZiroomSpider(scrapy.Spider):
         id = response.meta['id']
         house_id = response.meta['house_id']
         price = eval(response.text)['data']
-        item['price'] = self.get_price_from_url('http:' + price['price'][0], price['price'][2])
+        item['price'] = get_int(self.get_price_from_image('http:' + price['price'][0], price['price'][2]))
         item['payment'] = []
         for payment in price['payment']:
             payment_dict = {
                 'period': payment['period'],
-                'price': self.get_price_from_url('http:' + payment['rent'][0], payment['rent'][2])
+                'price': get_int(self.get_price_from_image('http:' + payment['rent'][0], payment['rent'][2]))
             }
             item['payment'].append(payment_dict)
+            self.logger.error('payment price parse error')
 
         item['recommend'] = []
         for recommend in price['recom']:
@@ -91,7 +102,7 @@ class ZiroomSpider(scrapy.Spider):
                 'url': recommend['url'],
                 'photo': recommend['photo'],
                 'info': recommend['info'],
-                'price': self.get_price_from_url('http:' + recommend['price'][0], recommend['price'][2]),
+                'price': get_int(self.get_price_from_image('http:' + recommend['price'][1], recommend['price'][2])),
                 'district': recommend['district'],
             }
             item['recommend'].append(recommend_dict)
