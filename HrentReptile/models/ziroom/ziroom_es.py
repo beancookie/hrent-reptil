@@ -51,8 +51,8 @@ class ZiroomDoc(Document):
     class Index:
         name = 'hrent'
 
-    class DocType:
-        name = 'ziroom'
+    class Meta:
+        doc_type = 'ziroom'
 
 
 if __name__ == '__main__':
