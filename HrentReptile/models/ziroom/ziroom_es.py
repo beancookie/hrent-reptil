@@ -11,6 +11,8 @@ class ZiroomDoc(Document):
     city = Text()
     # 位置
     address = Text()
+    # 详情
+    detail = Text()
     # 经纬度
     location = GeoPoint()
     # 标题

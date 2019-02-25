@@ -11,7 +11,7 @@ from HrentReptile.utils.str_util import get_float, get_int
 class ZiroomSpider(scrapy.Spider):
     name = 'ziroom'
     allowed_domains = ['nj.ziroom.com']
-    start_urls = ['http://nj.ziroom.com/z/nl/z2.html']
+    start_urls = [url.strip() for url in open('ziroom_urls.txt').readline()]
 
     def parse(self, response):
         houses = response.xpath('//ul[@id="houseList"]/li')
@@ -28,6 +28,7 @@ class ZiroomSpider(scrapy.Spider):
         item['id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
         item['url'] = response.url
         item['city'] = response.xpath('//span[@id="curCityName"]/text()').extract_first()
+        item['detail'] = response.xpath('//div[@class="aboutRoom gray-6"]/p/text()').extract_first()
         right = response.xpath('//div[@class="room_detail_right"]')
         item['title'] = right.xpath('./div[@class="room_name"]/h2/text()').extract_first().strip()
         item['address'] = re.split('\\d+', item['title'])[0]

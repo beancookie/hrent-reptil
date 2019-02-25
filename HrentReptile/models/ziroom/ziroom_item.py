@@ -12,6 +12,8 @@ class ZiroomItem(scrapy.Item, EsItem):
     city = scrapy.Field()
     # 位置
     address = scrapy.Field()
+    # 详情
+    detail = scrapy.Field()
     # 经纬度
     location = scrapy.Field()
     # 标题
@@ -58,6 +60,8 @@ class ZiroomItem(scrapy.Item, EsItem):
         ziroom.city = self['city']
         # 位置
         ziroom.address = self['address']
+        # 详情
+        ziroom.detail = self['detail']
         # 经纬度
         ziroom.location = self['location']
         # 标题
