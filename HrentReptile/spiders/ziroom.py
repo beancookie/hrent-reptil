@@ -10,8 +10,8 @@ from HrentReptile.utils.str_util import get_float, get_int
 
 class ZiroomSpider(scrapy.Spider):
     name = 'ziroom'
-    allowed_domains = ['nj.ziroom.com']
-    start_urls = [url.strip() for url in open('ziroom_urls.txt').readline()]
+    allowed_domains = ['ziroom.com']
+    start_urls = [url.strip() for url in open('%s_urls.txt' % name).readlines()]
 
     def parse(self, response):
         houses = response.xpath('//ul[@id="houseList"]/li')

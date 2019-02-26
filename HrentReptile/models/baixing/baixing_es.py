@@ -43,7 +43,7 @@ class BaixingDoc(Document):
         name = 'hrent'
 
     class Meta:
-        doc_type = 'ziroom'
+        doc_type = 'baixing'
 
 
 if __name__ == '__main__':

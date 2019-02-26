@@ -2,6 +2,7 @@
 import scrapy
 import re
 import hashlib
+import os
 from HrentReptile.models.baixing.baixing_item import BaixingItem
 from HrentReptile.utils.map_util import geocode
 from HrentReptile.utils.str_util import get_int, get_float, get_date
@@ -10,8 +11,10 @@ from HrentReptile.utils.str_util import get_int, get_float, get_date
 class BaixingSpider(scrapy.Spider):
     name = 'baixing'
     allowed_domains = ['baixing.com']
-    start_urls = [url.strip() for url in open('baixing_urls.txt').readline()]
+    start_urls = [url.strip() for url in open('%s_urls.txt' % name).readlines()]
     detail_keys = ['rent_type', 'house_type', 'area', 'detail', 'orientation', 'floor']
+
+    # def start_requests(self):
 
     def parse(self, response):
         houses = response.xpath('//ul[@class="list-ad-items has-melior-fang"]/li')
