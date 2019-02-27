@@ -24,7 +24,7 @@ class BaixingItem(scrapy.Item, EsItem):
     # 出租类型
     rent_type = scrapy.Field()
     # 细节
-    detail = scrapy.Field()
+    decorate = scrapy.Field()
     # 面积
     area = scrapy.Field()
     # 朝向
@@ -60,8 +60,8 @@ class BaixingItem(scrapy.Item, EsItem):
         baixing.house_type = self['house_type']
         # 出租类型
         baixing.rent_type = self['rent_type']
-        # 细节
-        baixing.detail = self['detail']
+        # 装修类型
+        baixing.decorate = self['decorate']
         # 面积
         baixing.area = self['area']
         # 朝向

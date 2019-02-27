@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+import json
+
 import scrapy
 import hashlib
 import re
+
+from scrapy import Request
+
 from HrentReptile.models.ziroom.ziroom_item import ZiroomItem
 from HrentReptile.utils.map_util import geocode
 from HrentReptile.utils.ocr_util import image_to_string
@@ -17,11 +22,11 @@ class ZiroomSpider(scrapy.Spider):
         houses = response.xpath('//ul[@id="houseList"]/li')
         for house in houses:
             detail_page = house.xpath('./div[@class="priceDetail"]/p[@class="more"]/a/@href').extract_first()
-            yield response.follow(url='http:' + detail_page, callback=self.parse_detail)
+            yield Request(url='http:' + detail_page, callback=self.parse_detail)
         next_page = response.xpath('//div[@id="page"]/a[@class="next"]/@href').extract_first()
 
         if next_page is not None:
-            yield response.follow(next_page, callback=self.parse)
+            yield Request(url='http:%s' % next_page, callback=self.parse)
 
     def parse_detail(self, response):
         item = ZiroomItem()
@@ -59,6 +64,7 @@ class ZiroomSpider(scrapy.Spider):
                            'gender': gender}
                 if chum_dict['job'] == '...':
                     chum_dict['job'] = '未知'
+
                 item['chums'].append(chum_dict)
 
         item['image_urls'] = []
@@ -69,7 +75,7 @@ class ZiroomSpider(scrapy.Spider):
         id = response.xpath('//input[@id="room_id"]/@value').extract_first()
         house_id = response.xpath('//input[@id="house_id"]/@value').extract_first()
         price_page = 'http://nj.ziroom.com/detail/info?id=%s&house_id=%s' % (id, house_id)
-        yield response.follow(url=price_page,
+        yield Request(url=price_page,
                              method='OPTIONS',
                              callback=self.parse_price,
                              meta={'data': item, 'id': id, 'house_id': house_id})
@@ -86,7 +92,7 @@ class ZiroomSpider(scrapy.Spider):
         item = response.meta['data']
         id = response.meta['id']
         house_id = response.meta['house_id']
-        price = eval(response.text)['data']
+        price = json.loads(response.body)['data']
         item['price'] = get_int(self.get_price_from_image('http:' + price['price'][0], price['price'][2]))
         item['payment'] = []
         for payment in price['payment']:
@@ -113,13 +119,13 @@ class ZiroomSpider(scrapy.Spider):
         item['vr_video'] = price['vr_video']
 
         price_page = 'http://nj.ziroom.com/detail/config?house_id=%s&id=%s' % (house_id, id)
-        yield response.follow(url=price_page,
+        yield Request(url=price_page,
                              method='OPTIONS',
                              callback=self.parse_deploy,
                              meta={'data': item})
 
     def parse_deploy(self, response):
         item = response.meta['data']
-        deploy = eval(response.text)['data']
+        deploy = json.loads(response.body)['data']
         item['deploy'] = deploy
         yield item

@@ -22,8 +22,8 @@ class BaixingDoc(Document):
     house_type = Text()
     # 出租类型
     rent_type = Text()
-    # 细节
-    detail = Text()
+    # 装修类型
+    decorate = Text()
     # 面积
     area = Float()
     # 朝向

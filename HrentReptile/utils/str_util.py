@@ -8,26 +8,26 @@ PATTERN = re.compile('.*?(\d+).*')
 def get_int(value, verify=True):
     """字符串转为int"""
     match_re = re.match(PATTERN, value)
-    if match_re and len(match_re.group(1)) == len(value):
-        nums = int(match_re.group(1))
-    elif verify:
-        nums = ERROR_VALUE
+    if match_re:
+        if verify and len(match_re.group(1)) != len(value):
+            num = ERROR_VALUE
+        else:
+            num = int(match_re.group(1))
     else:
-        nums = int(match_re.group(1))
-
-    return nums
+        num = -1
+    return num
 
 
 def get_float(value, verify=True):
     """字符串转为float"""
     match_re = re.match(PATTERN, value)
-    if match_re and len(match_re.group(1)) == len(value):
-        num = float(match_re.group(1))
-    elif verify:
-        num = ERROR_VALUE
+    if match_re:
+        if verify and len(match_re.group(1)) != len(value):
+            num = ERROR_VALUE
+        else:
+            num = float(match_re.group(1))
     else:
-        num = float(match_re.group(1))
-
+        num = ERROR_VALUE
     return num
 
 

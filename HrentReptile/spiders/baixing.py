@@ -12,7 +12,7 @@ class BaixingSpider(scrapy.Spider):
     name = 'baixing'
     allowed_domains = ['baixing.com']
     start_urls = [url.strip() for url in open('%s_urls.txt' % name).readlines()]
-    detail_keys = ['rent_type', 'house_type', 'area', 'detail', 'orientation', 'floor']
+    detail_keys = ['rent_type', 'house_type', 'area', 'decorate', 'orientation', 'floor']
 
     # def start_requests(self):
 

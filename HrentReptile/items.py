@@ -21,3 +21,7 @@ class EsItem(BaseItem):
         :return:
         """
         pass
+
+class UrlItem(scrapy.Item):
+    url = scrapy.Field()
+
