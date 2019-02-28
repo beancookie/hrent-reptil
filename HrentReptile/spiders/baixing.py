@@ -32,8 +32,9 @@ class BaixingSpider(scrapy.Spider):
                 if self.detail_keys[i] == 'area':
                     item[self.detail_keys[i]] = get_float(detail, verify=False)
                 elif self.detail_keys[i] == 'floor':
-                    item[self.detail_keys[i]] = get_int(detail)
-                    item[self.detail_keys[i]] = detail[0:2]
+                    if detail is not None:
+                        item[self.detail_keys[i]] = detail[0:2]
+                        item[self.detail_keys[i]] = get_int(detail)
                 else:
                     item[self.detail_keys[i]] = detail
             item['address'] = house.xpath('./div[@class="media-body"]/div[3]/text()').extract_first()

@@ -10,7 +10,7 @@ from scrapy import Request
 from HrentReptile.models.ziroom.ziroom_item import ZiroomItem
 from HrentReptile.utils.map_util import geocode
 from HrentReptile.utils.ocr_util import image_to_string
-from HrentReptile.utils.str_util import get_float, get_int
+from HrentReptile.utils.str_util import get_float, get_int, get_city_from_url
 
 
 class ZiroomSpider(scrapy.Spider):
@@ -35,8 +35,12 @@ class ZiroomSpider(scrapy.Spider):
         item['city'] = response.xpath('//span[@id="curCityName"]/text()').extract_first()
         item['detail'] = response.xpath('//div[@class="aboutRoom gray-6"]/p/text()').extract_first()
         right = response.xpath('//div[@class="room_detail_right"]')
-        item['title'] = right.xpath('./div[@class="room_name"]/h2/text()').extract_first().strip()
+        item['title'] = right.xpath('./div[@class="room_name"]/h2/text()').extract_first()
+        if item['title']:
+            item['title'] = item['title'].strip()
         item['address'] = re.split('\\d+', item['title'])[0]
+        if item['city'] is None:
+            item['city'] = get_city_from_url(item['url'])
         item['location'] = geocode(item['city'], item['address'])
         details = right.xpath('./ul[@class="detail_room"]/li')
         item['area'] = get_float(details[0].xpath('./text()').extract_first().split()[1])
@@ -101,7 +105,6 @@ class ZiroomSpider(scrapy.Spider):
                 'price': get_int(self.get_price_from_image('http:' + payment['rent'][0], payment['rent'][2]))
             }
             item['payment'].append(payment_dict)
-            self.logger.error('payment price parse error')
 
         item['recommend'] = []
         for recommend in price['recom']:

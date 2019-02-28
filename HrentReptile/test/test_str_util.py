@@ -1,7 +1,7 @@
 import datetime
 import unittest
 
-from HrentReptile.utils.str_util import get_date, get_int
+from HrentReptile.utils.str_util import get_date, get_int, get_city_from_url
 
 
 class MyTest(unittest.TestCase):  # 继承unittest.TestCase
@@ -17,4 +17,9 @@ class MyTest(unittest.TestCase):  # 继承unittest.TestCase
         self.assertEqual(-1, get_int('123a', True))
         self.assertEqual(123, get_int('123a', False))
         self.assertEqual(-1, get_int('va', False))
+
+    def test_get_city_from_url(self):
+        url = 'http://nj.ziroom.com/z/vr/61868811.html'
+        self.assertEqual('南京', get_city_from_url(url))
+        self.assertEqual('', get_city_from_url(''))
 
