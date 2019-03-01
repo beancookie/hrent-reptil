@@ -1,13 +1,4 @@
-from twisted.internet import reactor
-from scrapy.crawler import CrawlerRunner
-from scrapy.utils.log import configure_logging
-from HrentReptile.spiders.baixing import BaixingSpider
-from HrentReptile.spiders.ziroom import ZiroomSpider
+from scrapy import cmdline
 
-configure_logging()
-runner = CrawlerRunner()
-runner.crawl(BaixingSpider)
-runner.crawl(ZiroomSpider)
-d = runner.join()
-d.addBoth(lambda _: reactor.stop())
-reactor.run()
+cmdline.execute('scrapy crawl ziroom'.split())
+# cmdline.execute('scrapy crawl baixing'.split())

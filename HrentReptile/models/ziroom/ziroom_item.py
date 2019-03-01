@@ -4,10 +4,11 @@ from HrentReptile.models.ziroom.ziroom_es import ZiroomDoc
 
 
 class ZiroomItem(scrapy.Item, EsItem):
-    id = scrapy.Field()
+    _id = scrapy.Field()
     type = scrapy.Field()
     # 价格
     price = scrapy.Field()
+    original_price = scrapy.Field()
     # 城市
     city = scrapy.Field()
     # 位置
@@ -42,6 +43,7 @@ class ZiroomItem(scrapy.Item, EsItem):
     chums = scrapy.Field()
     # 付款方式
     payment = scrapy.Field()
+    original_payment = scrapy.Field()
     # 推荐
     recommend = scrapy.Field()
     # 活动
@@ -53,7 +55,6 @@ class ZiroomItem(scrapy.Item, EsItem):
 
     def save(self):
         ziroom = ZiroomDoc()
-        ziroom.id = self['id']
         # 价格
         ziroom.price = self['price']
         # 城市

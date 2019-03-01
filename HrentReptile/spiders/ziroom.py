@@ -30,7 +30,7 @@ class ZiroomSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = ZiroomItem()
-        item['id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
+        item['_id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
         item['url'] = response.url
         item['city'] = response.xpath('//span[@id="curCityName"]/text()').extract_first()
         item['detail'] = response.xpath('//div[@class="aboutRoom gray-6"]/p/text()').extract_first()
@@ -98,6 +98,8 @@ class ZiroomSpider(scrapy.Spider):
         house_id = response.meta['house_id']
         price = json.loads(response.body)['data']
         item['price'] = get_int(self.get_price_from_image('http:' + price['price'][0], price['price'][2]))
+        item['original_price'] = price['price']
+        item['original_payment'] = price['payment']
         item['payment'] = []
         for payment in price['payment']:
             payment_dict = {

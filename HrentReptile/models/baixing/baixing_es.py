@@ -4,7 +4,6 @@ connections.create_connection(hosts=["193.112.33.124"])
 
 
 class BaixingDoc(Document):
-    id = Text()
     url = Text()
     # 价格
     price = Integer()
@@ -31,7 +30,7 @@ class BaixingDoc(Document):
     # 更新时间
     update_date = Date()
     # 楼层
-    floor = Text()
+    floor = Integer()
     # 最高层
     top_floor = Integer()
     # 标签

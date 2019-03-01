@@ -12,7 +12,7 @@ class BaixingSpider(scrapy.Spider):
     name = 'baixing'
     allowed_domains = ['baixing.com']
     start_urls = [url.strip() for url in open('%s_urls.txt' % name).readlines()]
-    detail_keys = ['rent_type', 'house_type', 'area', 'decorate', 'orientation', 'floor']
+    detail_keys = ['rent_type', 'house_type', 'area', 'decorate', 'orientation', 'top_floor']
 
     # def start_requests(self):
 
@@ -31,10 +31,10 @@ class BaixingSpider(scrapy.Spider):
             for i, detail in enumerate(details):
                 if self.detail_keys[i] == 'area':
                     item[self.detail_keys[i]] = get_float(detail, verify=False)
-                elif self.detail_keys[i] == 'floor':
+                elif self.detail_keys[i] == 'top_floor':
                     if detail is not None:
-                        item[self.detail_keys[i]] = detail[0:2]
-                        item[self.detail_keys[i]] = get_int(detail)
+                        item[self.detail_keys[i]] = get_int(detail, verify=False)
+                        item['floor'] = detail
                 else:
                     item[self.detail_keys[i]] = detail
             item['address'] = house.xpath('./div[@class="media-body"]/div[3]/text()').extract_first()
@@ -50,7 +50,7 @@ class BaixingSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['data']
-        item['id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
+        item['_id'] = hashlib.md5(bytes(response.url, 'utf-8')).hexdigest()
         item['url'] = response.url
         images = response.xpath('//div[@class="featured-height"]/div')
         item['image_urls'] = []

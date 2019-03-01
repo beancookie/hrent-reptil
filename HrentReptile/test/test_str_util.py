@@ -16,6 +16,8 @@ class MyTest(unittest.TestCase):  # 继承unittest.TestCase
         self.assertEqual(1234, get_int('1234', False))
         self.assertEqual(-1, get_int('123a', True))
         self.assertEqual(123, get_int('123a', False))
+        self.assertEqual(123, get_int('aa123a', False))
+        self.assertEqual(123, get_int('中文123a', False))
         self.assertEqual(-1, get_int('va', False))
 
     def test_get_city_from_url(self):

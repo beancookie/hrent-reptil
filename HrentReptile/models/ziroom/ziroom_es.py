@@ -4,7 +4,6 @@ connections.create_connection(hosts=["193.112.33.124"])
 
 
 class ZiroomDoc(Document):
-    id = Text()
     # 价格
     price = Integer()
     # 城市

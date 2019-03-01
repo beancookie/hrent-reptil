@@ -4,7 +4,7 @@ from HrentReptile.models.baixing.baixing_es import BaixingDoc
 
 
 class BaixingItem(scrapy.Item, EsItem):
-    id = scrapy.Field()
+    _id = scrapy.Field()
     type = scrapy.Field()
     url = scrapy.Field()
     # 价格
@@ -42,7 +42,6 @@ class BaixingItem(scrapy.Item, EsItem):
 
     def save(self):
         baixing = BaixingDoc()
-        baixing.id = self['id']
         baixing.url = self['url']
         # 价格
         baixing.price = self['price']
@@ -69,7 +68,7 @@ class BaixingItem(scrapy.Item, EsItem):
         # 更新时间
         baixing.update_date = self['update_date']
         # 楼层
-        baixing.floor = self['floor']
+        baixing.top_floor = self['top_floor']
         # 标签
         baixing.tags = self['tags']
         # 图片

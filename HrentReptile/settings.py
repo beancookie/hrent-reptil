@@ -41,7 +41,7 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 ITEM_PIPELINES = {
-    # 'HrentReptile.pipelines.MongoPipeline': 2000,
+    'HrentReptile.pipelines.MongoPipeline': 2000,
     'HrentReptile.pipelines.ElasticSearchPipeline': 3000
 }
 AUTOTHROTTLE_START_DELAY = 2
